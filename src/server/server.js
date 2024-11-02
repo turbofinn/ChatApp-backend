@@ -2,6 +2,7 @@ const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
 const AWS = require('aws-sdk');
+const { v4: uuidv4 } = require('uuid');
 
 AWS.config.update({ region: 'us-east-1' }); // Change this to your region
 const dynamoDB = new AWS.DynamoDB.DocumentClient();
@@ -38,14 +39,15 @@ app.post('/messages', (req, res) => {
     const params = {
         TableName: 'Messages',
         Item: {
-            messageId: Date.now().toString(),
+            messageId: uuidv4(),
             restaurantId: message.restaurantId,
             customerId: message.customerId,
             tableNo: message.tableNo,
             customerMobileNo: message.customerMobileNo,
             chat: message.chat,
             userType: message.userType,
-            messageStatus: 'unread',
+            messageStatus: 'UNREAD',
+            time: Date.now(),
         },
     };
 
